@@ -3,13 +3,12 @@
 Neovim plugin for macOS. Switches the keyboard layout to the default one when
 leaving Insert mode and restores the previous layout when entering it again.
 
-Layouts are switched in-process with LuaJIT FFI calls to the Carbon Text Input
-Sources API, no external helper binary is used.
-
 ## Requirements
 
 - macOS
 - Neovim built with LuaJIT (`:lua print(jit and jit.version)`)
+
+Tested only on Apple Silicon: macOS 27.0, Neovim 0.11.0.
 
 ## Installation
 
@@ -32,9 +31,6 @@ Sources API, no external helper binary is used.
 | `InsertEnter` | restore the layout remembered for the tab page                  |
 | `FocusLost`   | remember the current layout                                     |
 | `FocusGained` | restore the layout remembered on `FocusLost`                    |
-
-Insert mode and focus layouts are stored separately, so switching windows or
-tabs in Normal mode does not overwrite the Insert mode layout.
 
 ## Options
 
