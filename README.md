@@ -17,7 +17,7 @@ Sources API, no external helper binary is used.
 
 ```lua
 {
-  dir = "/path/to/layout-switch.nvim",
+  "newrlan/layout-switch.nvim",
   lazy = false,
   opts = {},
 }
