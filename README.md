@@ -8,7 +8,10 @@ leaving Insert mode and restores the previous layout when entering it again.
 - macOS
 - Neovim built with LuaJIT (`:lua print(jit and jit.version)`)
 
-Tested only on Apple Silicon: macOS 27.0, Neovim 0.11.0.
+No external tools are required.
+
+Tested only on Apple Silicon: macOS 27.0, Neovim 0.11.0. Only keyboard layouts
+were tested, input methods (e.g. Chinese, Japanese) were not.
 
 ## Installation
 
@@ -61,6 +64,7 @@ local layout = require("layout-switch")
 
 layout.get()          -- current input source ID
 layout.set(id)        -- select input source, false if it was not selected
+layout.get_default()  -- default input source ID
 layout.set_default()  -- select the default input source
 layout.list()         -- IDs of enabled keyboard input sources
 ```
@@ -73,3 +77,22 @@ layout.set_default()
 -- ...
 layout.set(saved)
 ```
+
+## Health check
+
+```vim
+:checkhealth layout-switch
+```
+
+Checks LuaJIT, the Text Input Sources API, enabled input sources, the default
+input source and whether `setup()` is called.
+
+## Documentation
+
+```vim
+:help layout-switch
+```
+
+## License
+
+[MIT](LICENSE)

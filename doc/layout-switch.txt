@@ -1,0 +1,117 @@
+*layout-switch.txt*    Switch keyboard layout outside of Insert mode on macOS
+
+==============================================================================
+CONTENTS                                              *layout-switch-contents*
+
+  1. Introduction ...................................... |layout-switch|
+  2. Requirements ......................... |layout-switch-requirements|
+  3. Setup ....................................... |layout-switch-setup|
+  4. Behaviour ............................... |layout-switch-behaviour|
+  5. Options ................................... |layout-switch-options|
+  6. API ........................................... |layout-switch-api|
+  7. Health check ................................ |layout-switch-health|
+
+==============================================================================
+1. INTRODUCTION                                                *layout-switch*
+
+layout-switch.nvim switches the keyboard layout to the default one when
+leaving Insert mode and restores the previous layout when entering Insert
+mode again.
+
+==============================================================================
+2. REQUIREMENTS                                   *layout-switch-requirements*
+
+- macOS
+- Neovim built with LuaJIT, check with: >vim
+    :lua print(jit and jit.version)
+<
+No external tools are required.
+
+Tested only on Apple Silicon: macOS 27.0, Neovim 0.11.0. Only keyboard
+layouts were tested, input methods (e.g. Chinese, Japanese) were not.
+
+==============================================================================
+3. SETUP                                                 *layout-switch-setup*
+
+lazy.nvim: >lua
+    {
+      "newrlan/layout-switch.nvim",
+      lazy = false,
+      opts = {},
+    }
+<
+Without a plugin manager: >lua
+    require("layout-switch").setup({})
+<
+==============================================================================
+4. BEHAVIOUR                                         *layout-switch-behaviour*
+
+  Event          Action ~
+  setup()        switch to the default layout
+  InsertLeave    remember the current layout for the tab page, switch to
+                 the default layout
+  InsertEnter    restore the layout remembered for the tab page
+  FocusLost      remember the current layout
+  FocusGained    restore the layout remembered on FocusLost
+
+==============================================================================
+5. OPTIONS                                             *layout-switch-options*
+
+Defaults: >lua
+    {
+      default = nil,
+      restore_insert = true,
+      restore_focus = true,
+    }
+<
+                                               *layout-switch-options-default*
+default ~
+    Input source ID used outside of Insert mode, e.g.
+    "com.apple.keylayout.ABC". nil: the current ASCII-capable layout, or the
+    last used one. Enabled IDs: >vim
+    :lua print(vim.inspect(require("layout-switch").list()))
+<
+                                        *layout-switch-options-restore_insert*
+restore_insert ~
+    Remember layout on |InsertLeave| and restore it on |InsertEnter|.
+
+                                         *layout-switch-options-restore_focus*
+restore_focus ~
+    Remember layout on |FocusLost| and restore it on |FocusGained|.
+
+==============================================================================
+6. API                                                     *layout-switch-api*
+
+layout.get()                                             *layout-switch.get()*
+    ID of the current input source, nil if it is not available.
+
+layout.set({id})                                         *layout-switch.set()*
+    Select input source {id}. Does nothing if it is already selected.
+    Returns false if the input source was not selected.
+
+layout.get_default()                             *layout-switch.get_default()*
+    ID of the default input source, see |layout-switch-options-default|.
+
+layout.set_default()                             *layout-switch.set_default()*
+    Select the default input source.
+
+layout.list()                                           *layout-switch.list()*
+    IDs of enabled keyboard input sources.
+
+Example: switch to the default layout inside a snippet and restore it after.
+>lua
+    local layout = require("layout-switch")
+    local saved = layout.get()
+    layout.set_default()
+    -- ...
+    layout.set(saved)
+<
+==============================================================================
+7. HEALTH CHECK                                         *layout-switch-health*
+
+    :checkhealth layout-switch
+
+Checks LuaJIT, the Text Input Sources API, enabled input sources, the default
+input source and whether setup() is called.
+
+ vim:tw=78:ts=8:ft=help:norl:

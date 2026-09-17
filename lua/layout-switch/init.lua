@@ -39,13 +39,19 @@ function M.set(id)
   return tis.select(id)
 end
 
+---ID of the default input source: `default` option or ASCII-capable layout.
+---@return string|nil
+function M.get_default()
+  if not tis.load() then
+    return nil
+  end
+  return config.default or tis.ascii()
+end
+
 ---Select the default input source.
 ---@return boolean
 function M.set_default()
-  if not tis.load() then
-    return false
-  end
-  return M.set(config.default or tis.ascii())
+  return M.set(M.get_default())
 end
 
 ---IDs of enabled keyboard input sources, candidates for `default`.
